@@ -8,6 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.pokedex.presentation.homeView.HomeView
 
 
 @Composable
@@ -16,7 +17,7 @@ fun Navigation(
 ){
     NavHost(navController = navController, startDestination =Screen.HomeScreen.route ){
         composable(Screen.HomeScreen.route){
-
+           HomeView(navController = navController)
         }
         composable(Screen.DetailScreen.route + "/{dominantColor}/{pokemonName}",
             arguments = listOf(
