@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pokedex.R
+import com.example.pokedex.presentation.homeView.elements.SearchBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,49 +81,6 @@ fun HomeView(
        }
     }
 }
-
-
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    onSearch :(String)-> Unit = {},
-    hint:String = ""
-){
-   var text by remember {
-       mutableStateOf("")
-   }
-    var isHintDisplayed by remember {
-        mutableStateOf(hint != "")
-    }
-    Box (modifier = modifier){
-     BasicTextField(
-         value = text,
-         onValueChange = {
-             text = it
-             onSearch(it)
-         },
-         maxLines = 1,
-         textStyle = TextStyle(color = Color.Black),
-         singleLine = true,
-         modifier = Modifier
-             .fillMaxWidth()
-             .shadow(5.dp, CircleShape)
-             .background(Color.White, CircleShape)
-             .padding(horizontal = 20.dp, vertical = 16.dp)
-             .onFocusEvent {
-                 isHintDisplayed = !it.isFocused
-             }
-     )
-        if(isHintDisplayed){
-            Text(
-                text = hint,
-                color = Color.LightGray,
-                modifier = Modifier.padding(16.dp))
-        }
-    }
-
-}
-
 
 
 

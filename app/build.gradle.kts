@@ -76,6 +76,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
