@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pokedex.R
+import com.example.pokedex.presentation.homeView.elements.PokemonList
 import com.example.pokedex.presentation.homeView.elements.SearchBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,6 +78,8 @@ fun HomeView(
                    .fillMaxWidth()
                    .padding(16.dp)
            )
+           Spacer(modifier = Modifier.height(16.dp))
+           PokemonList(navController = navController)
 
 
        }

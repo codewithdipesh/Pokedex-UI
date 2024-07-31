@@ -3,7 +3,9 @@ package com.example.pokedex.viewModel
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
@@ -15,9 +17,13 @@ import com.example.pokedex.data.models.PokemonListEntry
 import com.example.pokedex.repository.PokemonRepository
 import com.example.pokedex.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class PokemonListViewModel @Inject constructor(
@@ -25,20 +31,33 @@ class PokemonListViewModel @Inject constructor(
 ) :ViewModel()
 {
     private var curPage = 0
-    var pokemonList = mutableListOf<List<PokemonListEntry>>(emptyList())
-    var loadError by mutableStateOf("")
-    var isLoading by mutableStateOf(false)
-    var endReached by mutableStateOf(false)
+
+    private val _pokemonList = MutableStateFlow<List<PokemonListEntry>>(emptyList())
+    val pokemonList: StateFlow<List<PokemonListEntry>> = _pokemonList.asStateFlow()
+
+    private val _endReached = MutableStateFlow(false)
+    val endReached: StateFlow<Boolean> = _endReached.asStateFlow()
+
+    private val _loadError = MutableStateFlow<String?>(null)
+    val loadError: StateFlow<String?> = _loadError.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val PAGE_SIZE = 20
 
+
+    init {
+        loadPokemonPaginated()
+    }
+
    fun loadPokemonPaginated(){
        viewModelScope.launch {
-           isLoading = true //laoding getting the details
+           _isLoading.value= true //laoding getting the details
            val result = repository.getPokemonList(PAGE_SIZE,curPage * PAGE_SIZE) //20 pokemon per page and for next page we get from 21( offset 20 = 20*1) pokemon
            when(result){
                is Resource.Success ->{
-                   endReached = curPage * PAGE_SIZE >= result.data!!.count //check from api result count
+                   _endReached.value = curPage * PAGE_SIZE >= result.data!!.count //check from api result count
                    // "results": [
                    //    {
                    //      "name": "metapod",
@@ -57,13 +76,13 @@ class PokemonListViewModel @Inject constructor(
                        PokemonListEntry(entry.name.capitalize(Locale.ROOT),url,number.toInt())
                    }
 
+                   _pokemonList.value += pokemonEntries
                    curPage++
-                   isLoading = false
-                   pokemonList += pokemonEntries
+                   _isLoading.value = false
                }
                is Resource.Error->{
-                  isLoading = false
-                   loadError = result.message!!
+                  _isLoading.value = false
+                   _loadError.value = result.message!!
                }
 
            }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -73,26 +74,26 @@ fun PokedexEntry(
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(entry.imageUrl)
-                    .target {
-                            viewModel.calcDominantColor(
-                                drawable = it
-                            ) { color->
-                                dominantColor = color
-                            }
-                    }
                     .build(),
+                contentDescription = entry.pokemonName,
+                modifier = Modifier
+                    .size(120.dp)
+                    .align(
+                        Alignment.CenterHorizontally
+                    ),
                 loading = {
                           CircularProgressIndicator(
                               color = MaterialTheme.colorScheme.primary,
                               modifier = Modifier.scale(0.5F)
                           )
                 },
-                contentDescription = entry.pokemonName,
-                modifier = Modifier
-                    .size(120.dp)
-                    .align(
-                        Alignment.CenterHorizontally
-                    )
+                onSuccess = {success->
+                    val drawable = success.result.drawable
+                    viewModel.calcDominantColor(drawable){color->
+                        dominantColor = color
+                    }
+
+                }
             )
             Text(text = entry.pokemonName,
                 fontFamily = RobotoCondensed,
