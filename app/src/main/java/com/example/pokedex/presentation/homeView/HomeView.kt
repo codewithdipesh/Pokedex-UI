@@ -36,16 +36,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pokedex.R
 import com.example.pokedex.presentation.homeView.elements.PokemonList
 import com.example.pokedex.presentation.homeView.elements.SearchBar
+import com.example.pokedex.viewModel.PokemonListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeView(
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    viewModel: PokemonListViewModel = hiltViewModel()
 ){
     Scaffold(
         topBar = {
@@ -76,7 +79,10 @@ fun HomeView(
                hint = "Search...",
                modifier = Modifier
                    .fillMaxWidth()
-                   .padding(16.dp)
+                   .padding(16.dp),
+               onSearch = {
+                   viewModel.searchPokemonList(it)
+               }
            )
            Spacer(modifier = Modifier.height(16.dp))
            PokemonList(navController = navController)

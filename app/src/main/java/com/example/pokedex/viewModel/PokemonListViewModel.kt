@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import com.example.pokedex.data.models.PokemonListEntry
 import com.example.pokedex.repository.PokemonRepository
 import com.example.pokedex.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,10 +48,46 @@ class PokemonListViewModel @Inject constructor(
 
     private val PAGE_SIZE = 20
 
+    private var cachedPokemonList = listOf<PokemonListEntry>()
+
+    var isSearchStarting = true
+
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching:StateFlow<Boolean> = _isSearching.asStateFlow()
 
     init {
         loadPokemonPaginated()
     }
+
+    fun searchPokemonList(query :String){
+        val listToSearch = if(isSearchStarting) {
+            _pokemonList.value
+        }else{
+            cachedPokemonList
+        }
+
+        viewModelScope.launch (Dispatchers.Default){
+            if(query.isEmpty()){
+                _pokemonList.value = cachedPokemonList
+                _isSearching.value = false
+                isSearchStarting = true
+                return@launch
+            }
+            val results = listToSearch.filter {
+                it.pokemonName.lowercase().contains(query.lowercase().trim(),ignoreCase = false) ||
+                        it.number.toString() == query
+            }
+            if(isSearchStarting){
+                cachedPokemonList = _pokemonList.value
+                isSearchStarting =false
+
+            }
+            _pokemonList.value = results
+            _isSearching.value =true
+        }
+    }
+
+
 
    fun loadPokemonPaginated(){
        viewModelScope.launch {
@@ -83,6 +121,9 @@ class PokemonListViewModel @Inject constructor(
                is Resource.Error->{
                   _isLoading.value = false
                    _loadError.value = result.message!!
+               }
+               is Resource.Loading ->{
+                   _isLoading.value = true
                }
 
            }

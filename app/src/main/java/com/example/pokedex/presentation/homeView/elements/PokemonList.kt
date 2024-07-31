@@ -26,6 +26,7 @@ fun PokemonList(
     val endReached by viewModel.endReached.collectAsState()
     val loadError by viewModel.loadError.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -36,7 +37,7 @@ fun PokemonList(
             index->
             val pokemon = pokemonList[index]
             //check end and paginate
-            if(index >= pokemonList.size -1 && !endReached && !isLoading){
+            if(index >= pokemonList.size -1 && !endReached && !isLoading && !isSearching){
                 viewModel.loadPokemonPaginated()
             }
             PokedexEntry(
