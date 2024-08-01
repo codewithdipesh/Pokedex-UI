@@ -9,8 +9,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.pokedex.presentation.detail_screen.PokemonDetailCard
+import com.example.pokedex.presentation.detail_screen.PokemonDetailScreen
 import com.example.pokedex.presentation.homeView.HomeView
+import timber.log.Timber
 import java.util.Locale
 
 
@@ -48,13 +49,11 @@ fun Navigation(
                 }
             }
 
-            PokemonDetailCard(
-                dominantColor = dominantColor ,
-                name =  pokemonName!!.toLowerCase(Locale.ROOT),
-                navController = navController
+            PokemonDetailScreen(
+                dominantColor = dominantColor,
+                name = pokemonName!!.lowercase(Locale.ROOT),
+                navController=navController
             )
-
-
 
         }
     }

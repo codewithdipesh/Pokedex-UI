@@ -40,6 +40,8 @@ import com.example.pokedex.data.models.PokemonListEntry
 import com.example.pokedex.presentation.Navigation.Screen
 import com.example.pokedex.ui.theme.RobotoCondensed
 import com.example.pokedex.viewModel.PokemonListViewModel
+import timber.log.Timber
+
 @Composable
 fun PokedexEntry(
     entry: PokemonListEntry,
@@ -66,7 +68,7 @@ fun PokedexEntry(
                 )
             )
             .clickable {
-                navController.navigate(Screen.DetailScreen.route + "/${dominantColor.toArgb()}/{${entry.pokemonName}}")
+                navController.navigate(Screen.DetailScreen.route + "/${dominantColor.toArgb()}/${entry.pokemonName}")
             },
         contentAlignment = Alignment.Center
     ){
