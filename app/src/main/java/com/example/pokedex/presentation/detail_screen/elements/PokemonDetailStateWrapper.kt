@@ -29,7 +29,8 @@ fun PokemonDetailStateWrapper(
         }
         is Resource.Success -> {
            DetailSection(
-               pokemonInfo = pokemonInfo.data!!
+               pokemonInfo = pokemonInfo.data!!,
+               modifier = modifier
            )
         }
         is Resource.Error -> {

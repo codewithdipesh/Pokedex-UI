@@ -39,7 +39,9 @@ fun DetailSection(
        PokemonTypeSection(types = pokemonInfo.types)
        PokemonDetailDataScreen(
            weight = pokemonInfo.weight,
-           height = pokemonInfo.height)
+           height = pokemonInfo.height
+       )
+       PokemonBaseStat(pokemonInfo = pokemonInfo)
    }
 
 }
